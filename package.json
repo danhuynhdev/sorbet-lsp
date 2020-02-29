@@ -3,16 +3,16 @@
 	"description": "Sorbet language server",
 	"author": "Tan Huynh",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/danhuynhdev/sorbet-lsp"
 	},
 	"categories": [],
 	"keywords": [
-    "sorbet",
-    "ruby",
-    "lsp"
+		"sorbet",
+		"ruby",
+		"lsp"
 	],
 	"engines": {
 		"vscode": "^1.33.0"
@@ -37,7 +37,7 @@
 	},
 	"dependencies": {
 		"vscode-languageclient": "^5.2.1",
-    "cross-spawn": "^7.0.1",
+		"cross-spawn": "^7.0.1",
 		"shell-escape": "^0.2.0"
 	}
 }
