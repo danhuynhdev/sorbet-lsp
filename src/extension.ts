@@ -58,7 +58,7 @@ const spawnWithBash = (cmd, opts) => {
 
 export function activate(context: ExtensionContext) {
 	// The server is implemented in node
-	const cmd = ['bundle', 'exec', 'srb', 'tc', '--lsp', '--enable-all-experimental-lsp-features'];
+	const cmd = ['bundle', 'exec', 'srb', 'tc', '--lsp', '--enable-all-experimental-lsp-features', '--disable-watchman'];
 
 	const firstWorkspace = (workspace.workspaceFolders && workspace.workspaceFolders[0]) ? workspace.workspaceFolders[0].uri.fsPath : null;
 	const env = commonOptions(firstWorkspace);
