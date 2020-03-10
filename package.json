@@ -2,7 +2,7 @@
 	"name": "sorbet-lsp",
 	"description": "Sorbet language server",
 	"author": "Tan Huynh",
-  "publisher": "danhuynhdev",
+	"publisher": "danhuynhdev",
 	"license": "MIT",
 	"version": "0.1.2",
 	"repository": {
@@ -16,7 +16,7 @@
 		"lsp"
 	],
 	"engines": {
-		"vscode": "^1.33.0"
+		"vscode": "^1.43.0"
 	},
 	"activationEvents": [
 		"onLanguage:ruby"
@@ -33,7 +33,7 @@
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"tslint": "^5.16.0",
-		"vscode": "^1.1.35",
+		"@types/vscode": "^1.43.0",
 		"typescript": "^3.6.4"
 	},
 	"dependencies": {
