@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import * as child_process from 'child_process';
-import { workspace, ExtensionContext } from 'vscode';
+import { workspace, ExtensionContext, env } from 'vscode';
 import { platform } from 'os';
 import crossSpawn = require('cross-spawn');
 import shellEscape = require('shell-escape');
@@ -31,10 +31,7 @@ const spawnWithBash = (cmd, opts) => {
 		// OSX and Linux need to use an explicit login shell in order to find
 		// the correct Ruby environment through installation managers like rvm
 		// and rbenv.
-		var shell = process.env.SHELL;
-		if (!shell) {
-			shell = '/bin/bash';
-		}
+		var shell = env.shell || '/bin/bash';
 		if (shell.endsWith('bash') || shell.endsWith('zsh')) {
 			var shellCmd = shellEscape(cmd);
 			if (opts['cwd']) {
@@ -42,12 +39,8 @@ const spawnWithBash = (cmd, opts) => {
 			}
 			var shellArgs = [shellCmd];
 			shellArgs.unshift('-c');
-			if (shell.endsWith('zsh')) {
-				shellArgs.unshift('-l');
-			} else {
-				shellArgs.unshift('-l');
-			}
-			return child_process.spawn(shell, shellArgs, opts);
+			shellArgs.unshift('-l');
+			return child_process.spawn(shell, shellArgs, { shell, ...opts });
 		} else {
 			return crossSpawn(cmd.shift(), cmd, opts);
 		}
