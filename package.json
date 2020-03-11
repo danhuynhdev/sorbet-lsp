@@ -4,7 +4,7 @@
 	"author": "Tan Huynh",
 	"publisher": "danhuynhdev",
 	"license": "MIT",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/danhuynhdev/sorbet-lsp"
@@ -23,8 +23,8 @@
 	],
 	"main": "./out/extension",
 	"scripts": {
-		"update-vscode": "vscode-install",
-		"postinstall": "vscode-install",
+		"update-vscode": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install",
 		"vscode:prepublish": "npm run update-vscode && npm run compile",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w"
@@ -33,6 +33,7 @@
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"tslint": "^5.16.0",
+		"vscode": "^1.43.0",
 		"@types/vscode": "^1.43.0",
 		"typescript": "^3.6.4"
 	},
