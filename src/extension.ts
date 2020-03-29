@@ -55,55 +55,55 @@ export function activate(context: ExtensionContext) {
 	let disposableClient: Disposable;
 
 	const startLanguageServer = () => {
-	let cmd = [];
+		let cmd = [];
 
-	let vsconfig = vscode.workspace.getConfiguration('sorbet');
-	const commandPath = vsconfig.commandPath || 'srb';
-	const useBundler = vsconfig.useBundler;
-	const useWatchman = vsconfig.useWatchman;
-	const bundlerPath = vsconfig.bundlerPath || 'bundle';
+		let vsconfig = vscode.workspace.getConfiguration('sorbet');
+		const commandPath = vsconfig.commandPath || 'srb';
+		const useBundler = vsconfig.useBundler;
+		const useWatchman = vsconfig.useWatchman;
+		const bundlerPath = vsconfig.bundlerPath || 'bundle';
 
-	if (useBundler) {
-		cmd = cmd.concat([bundlerPath, 'exec', 'srb']);
-	} else {
-		cmd.push(commandPath);
-	}
-
-	cmd = cmd.concat(['tc', '--lsp', '--enable-all-experimental-lsp-features']);
-
-	if (!useWatchman) {
-		cmd.push('--disable-watchman');
-	}
-
-	const firstWorkspace = (workspace.workspaceFolders && workspace.workspaceFolders[0]) ? workspace.workspaceFolders[0].uri.fsPath : null;
-	const env = commonOptions(firstWorkspace);
-
-	// The debug options for the server
-	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
-	let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
-
-	const serverOptions: ServerOptions = () => {
-		return new Promise((resolve) => {
-			let child = spawnWithBash(cmd, env);
-			child.stderr.on('data', (data: Buffer) => {
-				console.log(data.toString());
-			});
-			child.on('exit', (code, signal) => {
-				console.log('Sorbet exited with code', code, signal);
-			});
-			resolve(child);
-		});
-	}
-
-	// Options to control the language client
-	let clientOptions: LanguageClientOptions = {
-		// Register the server for plain text documents
-		documentSelector: [{ scheme: 'file', language: 'ruby' }],
-		synchronize: {
-			// Notify the server about changes to relevant files in the workspace
-			fileEvents: workspace.createFileSystemWatcher('{**/*.rb,**/*.gemspec,**/Gemfile}')
+		if (useBundler) {
+			cmd = cmd.concat([bundlerPath, 'exec', 'srb']);
+		} else {
+			cmd.push(commandPath);
 		}
-	};
+
+		cmd = cmd.concat(['tc', '--lsp', '--enable-all-experimental-lsp-features']);
+
+		if (!useWatchman) {
+			cmd.push('--disable-watchman');
+		}
+
+		const firstWorkspace = (workspace.workspaceFolders && workspace.workspaceFolders[0]) ? workspace.workspaceFolders[0].uri.fsPath : null;
+		const env = commonOptions(firstWorkspace);
+
+		// The debug options for the server
+		// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
+		let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
+
+		const serverOptions: ServerOptions = () => {
+			return new Promise((resolve) => {
+				let child = spawnWithBash(cmd, env);
+				child.stderr.on('data', (data: Buffer) => {
+					console.log(data.toString());
+				});
+				child.on('exit', (code, signal) => {
+					console.log('Sorbet exited with code', code, signal);
+				});
+				resolve(child);
+			});
+		}
+
+		// Options to control the language client
+		let clientOptions: LanguageClientOptions = {
+			// Register the server for plain text documents
+			documentSelector: [{ scheme: 'file', language: 'ruby' }],
+			synchronize: {
+				// Notify the server about changes to relevant files in the workspace
+				fileEvents: workspace.createFileSystemWatcher('{**/*.rb,**/*.gemspec,**/Gemfile}')
+			}
+		};
 
 		// Create the language client and start the client.
 		client = new LanguageClient(
