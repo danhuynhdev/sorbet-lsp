@@ -1,45 +1,80 @@
 {
-	"name": "sorbet-lsp",
-	"description": "Sorbet language server",
-	"author": "Tan Huynh",
-	"publisher": "danhuynhdev",
-	"license": "MIT",
-	"version": "0.1.3",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/danhuynhdev/sorbet-lsp"
-	},
-	"categories": [],
-	"keywords": [
-		"sorbet",
-		"ruby",
-		"lsp"
-	],
-	"engines": {
-		"vscode": "^1.43.0"
-	},
-	"activationEvents": [
-		"onLanguage:ruby"
-	],
-	"main": "./out/extension",
-	"scripts": {
-		"update-vscode": "node ./node_modules/vscode/bin/install",
+  "name": "sorbet-lsp",
+  "description": "Sorbet language server",
+  "author": "Tan Huynh",
+  "publisher": "danhuynhdev",
+  "license": "MIT",
+  "version": "0.1.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danhuynhdev/sorbet-lsp"
+  },
+  "categories": [],
+  "keywords": [
+    "sorbet",
+    "ruby",
+    "lsp"
+  ],
+  "engines": {
+    "vscode": "^1.40.0"
+  },
+  "activationEvents": [
+    "onLanguage:ruby"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Sorbet settings for Ruby",
+      "properties": {
+        "sorbet.commandPath": {
+          "type": "string",
+          "default": "srb",
+          "description": "Path to the sorbet command.  Set this to an absolute path to select from multiple installed Ruby versions.",
+          "scope": "resource"
+        },
+        "sorbet.useBundler": {
+          "type": "boolean",
+          "description": "Use `bundle exec` to run sorbet. (If this is true, the sorbet.commandPath setting is ignored.)",
+          "default": false
+        },
+        "sorbet.useWatchman": {
+          "type": "boolean",
+          "description": "Use watchman with sorbet",
+          "default": false
+        },
+        "sorbet.bundlerPath": {
+          "type": "string",
+          "description": "Path to the bundle executable, defaults to 'bundle'",
+          "default": "bundle",
+          "scope": "resource"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "sorbet.restart",
+        "title": "Restart Sorbet",
+        "category": "Sorbet"
+      }
+    ]
+  },
+  "main": "./out/extension",
+  "scripts": {
+    "update-vscode": "node ./node_modules/vscode/bin/install",
     "postinstall": "node ./node_modules/vscode/bin/install",
-		"vscode:prepublish": "npm run update-vscode && npm run compile",
-		"compile": "tsc -b",
-		"watch": "tsc -b -w"
-	},
-	"devDependencies": {
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.11.7",
-		"tslint": "^5.16.0",
-		"vscode": "^1.43.0",
-		"@types/vscode": "^1.43.0",
-		"typescript": "^3.6.4"
-	},
-	"dependencies": {
-		"vscode-languageclient": "^5.2.1",
-		"cross-spawn": "^7.0.1",
-		"shell-escape": "^0.2.0"
-	}
+    "vscode:prepublish": "npm run update-vscode && npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "tslint": "^5.16.0",
+    "typescript": "^3.6.4",
+    "vscode": "^1.1.36"
+  },
+  "dependencies": {
+    "cross-spawn": "^7.0.1",
+    "shell-escape": "^0.2.0",
+    "vscode-languageclient": "^5.2.1"
+  }
 }

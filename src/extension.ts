@@ -4,6 +4,7 @@
  * ------------------------------------------------------------------------------------------ */
 
 import * as path from 'path';
+import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import { workspace, ExtensionContext, env } from 'vscode';
 import { platform } from 'os';
@@ -13,6 +14,7 @@ import shellEscape = require('shell-escape');
 import {
 	LanguageClient,
 	LanguageClientOptions,
+	Disposable,
 	ServerOptions,
 } from 'vscode-languageclient';
 
@@ -50,8 +52,28 @@ const spawnWithBash = (cmd, opts) => {
 }
 
 export function activate(context: ExtensionContext) {
-	// The server is implemented in node
-	const cmd = ['bundle', 'exec', 'srb', 'tc', '--lsp', '--enable-all-experimental-lsp-features', '--disable-watchman'];
+	let disposableClient: Disposable;
+
+	const startLanguageServer = () => {
+	let cmd = [];
+
+	let vsconfig = vscode.workspace.getConfiguration('sorbet');
+	const commandPath = vsconfig.commandPath || 'srb';
+	const useBundler = vsconfig.useBundler;
+	const useWatchman = vsconfig.useWatchman;
+	const bundlerPath = vsconfig.bundlerPath || 'bundle';
+
+	if (useBundler) {
+		cmd = cmd.concat([bundlerPath, 'exec', 'srb']);
+	} else {
+		cmd.push(commandPath);
+	}
+
+	cmd = cmd.concat(['tc', '--lsp', '--enable-all-experimental-lsp-features']);
+
+	if (!useWatchman) {
+		cmd.push('--disable-watchman');
+	}
 
 	const firstWorkspace = (workspace.workspaceFolders && workspace.workspaceFolders[0]) ? workspace.workspaceFolders[0].uri.fsPath : null;
 	const env = commonOptions(firstWorkspace);
@@ -76,23 +98,49 @@ export function activate(context: ExtensionContext) {
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
-		documentSelector: [{scheme: 'file', language: 'ruby'}],
+		documentSelector: [{ scheme: 'file', language: 'ruby' }],
 		synchronize: {
 			// Notify the server about changes to relevant files in the workspace
 			fileEvents: workspace.createFileSystemWatcher('{**/*.rb,**/*.gemspec,**/Gemfile}')
 		}
 	};
 
-	// Create the language client and start the client.
-	client = new LanguageClient(
-		'sorbetLanguageServer',
-		'Sorbet Language Server',
-		serverOptions,
-		clientOptions
-	);
+		// Create the language client and start the client.
+		client = new LanguageClient(
+			'sorbetLanguageServer',
+			'Sorbet Language Server',
+			serverOptions,
+			clientOptions
+		);
 
-	// Start the client. This will also launch the server
-	client.start();
+		// Start the client. This will also launch the server
+		disposableClient = client.start();
+	}
+
+	const restartLanguageServer = function (): Promise<void> {
+		return new Promise((resolve) => {
+			if (disposableClient) {
+				client.stop().then(() => {
+					disposableClient.dispose();
+					startLanguageServer();
+					resolve();
+				});
+			} else {
+				startLanguageServer();
+				resolve();
+			}
+		});
+	}
+
+	// Restart command
+	var disposableRestart = vscode.commands.registerCommand('sorbet.restart', () => {
+		restartLanguageServer().then(() => {
+			vscode.window.showInformationMessage('Sorbet server restarted.');
+		});
+	});
+	context.subscriptions.push(disposableRestart);
+
+	startLanguageServer();
 }
 
 export function deactivate(): Thenable<void> | undefined {
