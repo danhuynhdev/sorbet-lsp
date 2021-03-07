@@ -16,6 +16,7 @@ import {
 	LanguageClientOptions,
 	Disposable,
 	ServerOptions,
+	RevealOutputChannelOn
 } from 'vscode-languageclient';
 
 let client: LanguageClient;
@@ -96,22 +97,25 @@ export function activate(context: ExtensionContext) {
 		}
 
 		// Options to control the language client
-		let clientOptions: LanguageClientOptions = {
-			// Register the server for plain text documents
-			documentSelector: [{ scheme: 'file', language: 'ruby' }],
-			synchronize: {
-				// Notify the server about changes to relevant files in the workspace
-				fileEvents: workspace.createFileSystemWatcher('{**/*.rb,**/*.gemspec,**/Gemfile}')
-			}
-		};
+    let clientOptions: LanguageClientOptions = {
+      // Register the server for plain text documents
+      documentSelector: [{ scheme: 'file', language: 'ruby' }],
+      synchronize: {
+        // Notify the server about changes to relevant files in the workspace
+        fileEvents: workspace.createFileSystemWatcher('{**/*.rb,**/*.gemspec,**/Gemfile}')
+      },
+      outputChannelName: 'Sorbet Language Server',
+      revealOutputChannelOn: RevealOutputChannelOn.Never
+    };
 
-		// Create the language client and start the client.
-		client = new LanguageClient(
-			'sorbetLanguageServer',
-			'Sorbet Language Server',
-			serverOptions,
-			clientOptions
-		);
+
+    // Create the language client and start the client.
+    client = new LanguageClient(
+      'sorbetLanguageServer',
+      'Sorbet Language Server',
+      serverOptions,
+      clientOptions
+    );
 
 		// Start the client. This will also launch the server
 		disposableClient = client.start();
