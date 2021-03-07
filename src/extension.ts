@@ -4,6 +4,7 @@
  * ------------------------------------------------------------------------------------------ */
 
 import * as path from 'path';
+import { existsSync } from 'fs';
 import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import { workspace, ExtensionContext, env } from 'vscode';
@@ -77,6 +78,12 @@ export function activate(context: ExtensionContext) {
 		}
 
 		const firstWorkspace = (workspace.workspaceFolders && workspace.workspaceFolders[0]) ? workspace.workspaceFolders[0].uri.fsPath : null;
+
+		if (!existsSync(`${firstWorkspace}/sorbet/config`)) {
+			vscode.window.showInformationMessage('Sorbet config not found. Sorbet server will not be started');
+			return;
+		}
+
 		const env = commonOptions(firstWorkspace);
 
 		// The debug options for the server

@@ -4,7 +4,7 @@
   "author": "Tan Huynh",
   "publisher": "danhuynhdev",
   "license": "MIT",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/danhuynhdev/sorbet-lsp"
