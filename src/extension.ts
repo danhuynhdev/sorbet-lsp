@@ -64,6 +64,7 @@ export function activate(context: ExtensionContext) {
 		const useBundler = vsconfig.useBundler;
 		const useWatchman = vsconfig.useWatchman;
 		const bundlerPath = vsconfig.bundlerPath || 'bundle';
+		const commandOptions = vsconfig.commandOptions.trim();
 
 		if (useBundler) {
 			cmd = cmd.concat([bundlerPath, 'exec', 'srb']);
@@ -71,7 +72,13 @@ export function activate(context: ExtensionContext) {
 			cmd.push(commandPath);
 		}
 
-		cmd = cmd.concat(['tc', '--lsp', '--enable-all-experimental-lsp-features']);
+		cmd = cmd.concat(['tc', '--lsp']);
+
+		if (commandOptions) {
+			cmd.push(commandOptions);
+		} else {
+			cmd.push('--enable-all-experimental-lsp-features');
+		}
 
 		if (!useWatchman) {
 			cmd.push('--disable-watchman');
