@@ -1,4 +1,4 @@
-**DEPRECATED** in favor of the official extension [here](https://github.com/sorbet/sorbet/tree/master/vscode_extension)
+# **DEPRECATED in favor of the official extension [here](https://github.com/sorbet/sorbet/tree/master/vscode_extension)**
 
 # Sorbet LSP
 
