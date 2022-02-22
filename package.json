@@ -46,6 +46,11 @@
           "description": "Path to the bundle executable, defaults to 'bundle'",
           "default": "bundle",
           "scope": "resource"
+        },
+        "sorbet.commandOptions": {
+          "type": "string",
+          "default": "",
+          "description": "Sorbet command options. (If this is blank --enable-all-experimental-lsp-features is used)"
         }
       }
     },
